@@ -1,10 +1,10 @@
 import React from "react";
 
-const Landing = () => {
+const Home = () => {
     return (
         <>
-            <h1 className="text-3xl font-bold underline">Hello</h1>
+            <h1 className="text-3xl font-bold underline">Home</h1>
         </>
     )
 }
-export default Landing;
+export default Home;
