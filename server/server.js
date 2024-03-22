@@ -33,15 +33,16 @@ const User = mongoose.model('User', {
   guardian_name: String,
   notes: String,
   dob: Date,
+  patient_number: String,
 });
 
 // Register route
 app.post('/api/register', async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { patient_number, password } = req.body;
 
     // Check if the email already exists
-    const existingUser = await User.findOne({ email });
+    const existingUser = await User.findOne({ patient_number });
     if (existingUser) {
       return res.status(400).json({ error: 'Email already registered' });
     }
@@ -50,7 +51,7 @@ app.post('/api/register', async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // Create a new user instance and save it to the 'users' collection
-    const newUser = new User({ email, password: hashedPassword });
+    const newUser = new User({ patient_number, password: hashedPassword });
     await newUser.save();
 
     res.status(201).json({ message: 'User registered successfully' });
@@ -97,6 +98,7 @@ const formattedUser = {
   guardian_name: user.guardian_name,
   notes: user.notes, 
   dob: user.dob,
+  patient_number: user.patient_number,
   // Add any additional fields you want to include
 };
 
@@ -109,35 +111,35 @@ res.json(formattedUser);
   }
 });
 
-app.get('/api/patients', async (req, res) => {
-  try {
-    // Fetch all patients from the User collection
-    const patients = await User.find();
+// app.get('/api/patients', async (req, res) => {
+//   try {
+//     // Fetch all patients from the User collection
+//     const patients = await User.find();
 
-    // Map the users to include only the desired information
-    const formattedPatients = patients.map((patient) => ({
-      _id: patient._id,
-      email: patient.email,
-      forename: patient.forename,
-      surname: patient.surname,
-      department: patient.department,
-      is_admin: patient.is_admin,
-      guardian: patient.guardian, // Add this line
-      guardian_name: patient.guardian_name,
-      notes: patient.notes, 
-      dob: patient.dob,
+//     // Map the users to include only the desired information
+//     const formattedPatients = patients.map((patient) => ({
+//       _id: patient._id,
+//       email: patient.email,
+//       forename: patient.forename,
+//       surname: patient.surname,
+//       department: patient.department,
+//       is_admin: patient.is_admin,
+//       guardian: patient.guardian, // Add this line
+//       guardian_name: patient.guardian_name,
+//       notes: patient.notes, 
+//       dob: patient.dob,
       
    
       
-      // Add any additional fields you want to include
-    }));
+//       // Add any additional fields you want to include
+//     }));
 
-    res.json(formattedPatients);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-});
+//     res.json(formattedPatients);
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ error: 'Internal Server Error' });
+//   }
+// });
 // Login route
 // app.post('/api/login', async (req, res) => {
 //   try {
@@ -168,17 +170,17 @@ app.get('/api/patients', async (req, res) => {
 // Inside the /api/login route
 app.post('/api/login', async (req, res) => {
   try {
-    const { email, password } = req.body;
-    const user = await User.findOne({ email });
+    const { patient_number, password } = req.body;
+    const user = await User.findOne({ patient_number });
 
     if (!user) {
-      return res.status(401).json({ error: 'Invalid email or password' });
+      return res.status(401).json({ error: 'Invalid patient_number or password' });
     }
 
     const passwordMatch = await bcrypt.compare(password, user.password);
 
     if (!passwordMatch) {
-      return res.status(401).json({ error: 'Invalid email or password' });
+      return res.status(401).json({ error: 'Invalid patient_number or password' });
     }
 
     // Include is_admin in the token payload

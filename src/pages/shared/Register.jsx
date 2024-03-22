@@ -3,13 +3,13 @@ import React, { useState } from 'react';
 import axios from 'axios';
 
 const Register = () => {
-  const [email, setEmail] = useState('');
+  const [patient_number, setPatientNumber] = useState('');
   const [password, setPassword] = useState('');
 
   const handleRegister = async () => {
     try {
       await axios.post('http://localhost:5000/api/register', {
-        email,
+        patient_number,
         password,
       });
       console.log('Registration successful');
@@ -24,8 +24,8 @@ const Register = () => {
       <input
         type="email"
         placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
+        value={patient_number}
+        onChange={(e) => setPatientNumber(e.target.value)}
       />
       <input
         type="password"
